@@ -1,0 +1,46 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  tags: string[];
+  link: string;
+  image: string;
+}
+
+const { title, description, tags, link, image } = Astro.props;
+---
+
+<article class="group relative flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-all hover:shadow-md">
+  <!-- Блок с изображением -->
+  <div class="aspect-video w-full overflow-hidden bg-neutral-100">
+    <img 
+      src={image} 
+      alt={title} 
+      class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      loading="lazy"
+    />
+  </div>
+
+  <!-- Текстовая часть -->
+  <div class="flex flex-1 flex-col justify-between p-6">
+    <div>
+      <h3 class="text-xl font-semibold text-neutral-900">
+        <a href={link} class="focus:outline-none">
+          <span class="absolute inset-0" aria-hidden="true"></span>
+          {title}
+        </a>
+      </h3>
+      <p class="mt-3 text-sm leading-6 text-neutral-600">
+        {description}
+      </p>
+    </div>
+    
+    <div class="mt-6 flex flex-wrap gap-2">
+      {tags.map((tag) => (
+        <span class="inline-flex items-center rounded-md bg-neutral-100 px-2 py-1 text-xs font-medium text-neutral-600">
+          {tag}
+        </span>
+      ))}
+    </div>
+  </div>
+</article>

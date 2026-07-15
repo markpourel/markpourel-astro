@@ -1,0 +1,35 @@
+---
+// src/components/Footer.astro
+const currentYear = new Date().getFullYear();
+---
+
+<footer id="contacts" class="mt-24 border-t border-neutral-200 bg-white">
+  <div class="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+    <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
+      
+      <!-- Текстовый блок -->
+      <div class="text-center sm:text-left">
+        <h2 class="text-xl font-bold text-neutral-900">Mark Pourel</h2>
+        <p class="mt-2 text-sm text-neutral-600">Функциональный дизайн и проектирование.</p>
+      </div>
+      
+      <!-- Ссылки для связи -->
+      <div class="flex gap-6">
+        <a href="mailto:hello@markpourel.ru" class="text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900">
+          Email
+        </a>
+        <a href="https://t.me/your_telegram" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900">
+          Telegram
+        </a>
+      </div>
+      
+    </div>
+    
+    <!-- Копирайт -->
+    <div class="mt-8 flex justify-center border-t border-neutral-100 pt-8">
+      <p class="text-xs text-neutral-500">
+        &copy; {currentYear} Mark Pourel. Все права защищены.
+      </p>
+    </div>
+  </div>
+</footer>
