@@ -312,7 +312,8 @@ const projects = projectFiles.map(path => path.replace('/public', ''));
         let hoverEl = document.createElement('img');
         hoverEl.className = 'hover-anim';
         hoverEl.src = hoverSrc;
-        hoverEl.loading = 'lazy'; 
+        hoverEl.loading = 'lazy';
+        hoverEl.alt = ''; // <-- Добавили пустой alt для скринридеров
 
         inner.appendChild(hoverEl);
         el.appendChild(inner);
