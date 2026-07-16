@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+@font-face {
+  font-family: 'Fixel Display';
+  src: url('/fonts/FixelDisplay-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Fixel Display';
+  src: url('/fonts/FixelDisplay-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Fixel Display';
+  src: url('/fonts/FixelDisplay-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}

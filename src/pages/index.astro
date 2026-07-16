@@ -1,603 +1,138 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Image } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 
-// Фото профиля изолировано в своей папке
-import profileImg from '../assets/profile/profile.jpg'; 
+const projectFiles = Object.keys(import.meta.glob('/public/projects/*.{jpg,jpeg,png,webp}'));
+let projects = projectFiles.map(path => path.replace('/public', ''));
 
-// Astro автоматически находит все .jpg в папке public/projects/
-const projectFiles = Object.keys(import.meta.glob('/public/projects/*.jpg'));
-// Превращаем локальные пути сборки в публичные URL
-const projects = projectFiles.map(path => path.replace('/public', ''));
+if (projects.length === 0) {
+  projects = [
+    'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1000&auto=format&fit=crop',
+  ];
+}
 ---
 
 <Layout title="Марк Пурель | Диджитал-дизайнер">
-  
-  <header class="sticky top-0 z-50 w-full border-b border-neutral-900 bg-[#050505]/90 backdrop-blur-md">
-    <div class="mx-auto max-w-5xl px-5">
-      <div class="grid h-20 grid-cols-[1fr_110px] items-center gap-5">
-        <a href="/" class="flex items-center justify-start transition-opacity hover:opacity-80">
-          <img src="/icons/logo.svg" alt="P Logo" class="h-10 w-10" />
-        </a>
-        <a href="#contacts" class="flex w-full items-center justify-center rounded-lg bg-[#1a1a1a] py-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-800">
-          Связаться
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <!-- Уменьшили верхний/нижний паддинг main -->
-  <main class="mx-auto max-w-5xl px-5 py-6 overflow-hidden">
+  <!-- Основной контейнер 100vh: Паддинги 32px фиксированы, всё внутри тянется -->
+  <div class="mx-auto flex h-dvh w-full max-w-[3840px] flex-col p-[32px] gap-[32px] relative overflow-hidden bg-[#000000] box-border">
     
-    <!-- СЕКЦИЯ 1: Физическая галерея -->
-    <!-- Уменьшили mb и pb в 2 раза -->
-    <section class="mb-6 border-b border-neutral-900 pb-6 lg:mb-8 lg:pb-8 relative">
-      <div class="stage" id="stage">
-        <div class="stack" id="stack"></div>
-        <div class="hit-layer" id="hitLayer"></div>
-      </div>
-    </section>
+    <Header />
 
-    <!-- СЕКЦИЯ 2: Профиль -->
-    <!-- Уменьшили mb и pb в 2 раза -->
-    <section class="mb-6 grid grid-cols-[1fr_110px] items-center gap-5 border-b border-neutral-900 pb-6 lg:mb-8 lg:pb-8">
-      <div>
-        <p class="text-sm font-medium text-neutral-500">Марк Пурель</p>
-        <h1 class="mt-1 text-2xl font-bold tracking-tight text-white sm:text-4xl">
-          Диджитал-дизайнер
-        </h1>
-        <p class="mt-3 text-sm leading-relaxed text-neutral-400">
-          Закрываю весь цикл продакшена: UX/UI, 3D, Моушн и AI
-        </p>
-      </div>
-      
-<!-- Фото профиля -->
-      <div class="h-32 w-[110px] shrink-0 overflow-hidden rounded-2xl bg-neutral-900 sm:h-36">
-        <Image 
-          src={profileImg} 
-          alt="Марк Пурель" 
-          loading="eager"
-          fetchpriority="high"
-          class="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-        />
-      </div>
-    </section>
+    <!-- СЦЕНА КЕЙСОВ -->
+    <main class="relative w-full flex-1 min-h-0 shrink-0" id="stage">
+      <div class="stack" id="stack"></div>
+      <div class="hit-layer" id="hitLayer"></div>
+    </main>
 
-    <!-- СЕКЦИЯ 3: Софт -->
-    <!-- Сильно уменьшили паддинг снизу -->
-    <section class="grid grid-cols-[1fr_110px] gap-5 pb-8 lg:pb-10">
-      <div class="grid grid-cols-2 gap-y-4 sm:gap-y-6">
-        <div class="flex items-center gap-3">
-          <img src="/icons/figma.svg" alt="Figma" class="h-6 w-6" />
-          <span class="text-xs font-medium text-neutral-400">Figma</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <img src="/icons/tilda.svg" alt="Tilda" class="h-6 w-6" />
-          <span class="text-xs font-medium text-neutral-400">Tilda</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <img src="/icons/illustrator.svg" alt="Illustrator" class="h-6 w-6" />
-          <span class="text-xs font-medium text-neutral-400">Illustrator</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <img src="/icons/after.svg" alt="After Effects" class="h-6 w-6" />
-          <span class="text-xs font-medium text-neutral-400">After Effects</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <img src="/icons/redshift.svg" alt="Redshift" class="h-6 w-6" />
-          <span class="text-xs font-medium text-neutral-400">Redshift</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <img src="/icons/comfy.svg" alt="ComfyUI" class="h-6 w-6" />
-          <span class="text-xs font-medium text-neutral-400">ComfyUI</span>
-        </div>
-      </div>
-
-      <div class="flex flex-col gap-y-4 sm:gap-y-6">
-        <div class="flex items-center gap-3">
-          <img src="/icons/photoshop.svg" alt="Photoshop" class="h-6 w-6" />
-          <span class="text-xs font-medium text-neutral-400">Photoshop</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <img src="/icons/3dsmax.svg" alt="3dsMax" class="h-6 w-6" />
-          <span class="text-xs font-medium text-neutral-400">3dsMax</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <img src="/icons/flow.svg" alt="Google Flow" class="h-6 w-6" />
-          <span class="text-xs font-medium text-neutral-400">Google Flow</span>
-        </div>
-      </div>
-    </section>
-  </main>
+    <Footer />
+   
+  </div>
 </Layout>
 
 <style is:global>
-  :root {
-    /* Ограничили высоту до 380px, чтобы блок галереи гарантированно влезал в 1080p монитор вместе с остальным контентом */
-    --card-h: clamp(240px, 28vw, 380px);
-    /* Оставляем минимальный зазор для Stage, чтобы не было пустых дыр */
-    --stage-h: calc(var(--card-h) + 12px);
-  }
-
-  /* Зона физики */
-  .stage {
-    position: relative;
-    width: 100%;
-    height: var(--stage-h);
-    overflow: visible;
-    touch-action: pan-y;
-    user-select: none;
-    -webkit-user-select: none;
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity .7s ease, transform .7s ease;
-  }
-
-  html.ui-ready .stage {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .stack {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    overflow: visible;
-  }
-
-  .hit-layer {
-    position: absolute;
-    left: 0; top: 0; right: 0; bottom: 0;
-    z-index: 900;
-    cursor: grab;
-    touch-action: pan-y;
-  }
+  /* Физика и стили карточек без изменений */
+  .stage { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+  html.ui-ready .stage { opacity: 1; transform: translateY(0); }
+  .stack { position: absolute; inset: 0; z-index: 1; overflow: visible; }
+  .hit-layer { position: absolute; inset: 0; z-index: 900; cursor: grab; touch-action: pan-y; }
   .hit-layer.is-dragging { cursor: grabbing; }
 
-  /* Карточки */
-  .card {
-    position: absolute;
-    left: 0; top: 0;
-    height: var(--card-h);
-    background: #1a1a1a;
-    padding: 8px;
-    border-radius: 16px;
-    box-shadow: 0 12px 32px rgba(0,0,0,.5), 0 4px 12px rgba(0,0,0,.3);
-    will-change: transform, box-shadow;
-    transform-origin: center center;
-    cursor: pointer;
-    pointer-events: none;
-  }
+  .card { position: absolute; left: 0; top: 0; background: #3A3A3A; border-radius: 0.5rem; padding: 0px; box-sizing: border-box; will-change: transform; transform-origin: center center; cursor: pointer; pointer-events: none; }
+  .card-img { width: 100%; height: 100%; border-radius: 0.5rem; background-size: cover; background-position: center; position: relative; overflow: hidden; }
+  .hover-anim { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1); border-radius: inherit; pointer-events: none; }
+  @media (hover: hover) { .card.is-active .hover-anim { opacity: 1; } }
 
-  .card-img {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    background-size: cover;
-    background-position: center;
-    background-color: #050505;
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* Слой для анимированного WebP при наведении (только ПК) */
-  .hover-anim {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    border-radius: inherit;
-    pointer-events: none;
-  }
-
-  @media (hover: hover) {
-    .card.is-active .hover-anim { opacity: 1; }
-  }
-
-  /* Фуллскрин модалка */
-  .gallery-overlay {
-    position: fixed; inset: 0; z-index: 2000; opacity: 0;
-    background: rgba(5, 5, 5, .8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
-
-  .gallery-clone {
-    position: fixed; z-index: 2001; cursor: zoom-out;
-    background: #1a1a1a;
-    padding: 8px;
-    border-radius: 16px; 
-    box-shadow: 0 28px 68px rgba(0,0,0,.8);
-    will-change: left, top, width, height, transform;
-  }
-
-  .gallery-close {
-    position: fixed; right: 30px; top: 30px; z-index: 2002;
-    width: 46px; height: 46px; border: 0; border-radius: 50%;
-    background: rgba(255,255,255,.1); color: #fff;
-    box-shadow: 0 10px 30px rgba(0,0,0,.5);
-    font-size: 31px; cursor: pointer; opacity: 0;
-    display: flex; align-items: center; justify-content: center;
-    backdrop-filter: blur(10px);
-    transition: background 0.2s;
-  }
+  .gallery-overlay { position: fixed; inset: 0; z-index: 2000; opacity: 0; background: rgba(5, 5, 5, .8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+  .gallery-clone { position: fixed; z-index: 2001; cursor: zoom-out; background: #3A3A3A; padding: 0px; border-radius: 0.5rem; box-shadow: 0 28px 68px rgba(0,0,0,.8); will-change: left, top, width, height, transform; }
+  .gallery-close { position: fixed; right: 2rem; top: 2rem; z-index: 2002; width: 3rem; height: 3rem; border: 0; border-radius: 50%; background: rgba(255,255,255,.1); color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.5); font-size: 2rem; cursor: pointer; opacity: 0; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); transition: background 0.2s; }
   .gallery-close:hover { background: rgba(255,255,255,.2); }
-
   body.modal-open { overflow: hidden; }
-
-  @media (max-width: 760px) {
-    :root { 
-      --card-h: clamp(260px, 60vw, 380px); 
-      --stage-h: calc(var(--card-h) + 10px); 
-    }
-  }
 </style>
 
 <script define:vars={{ projects }}>
   (function () {
     'use strict';
-    
-    const SETTINGS = {
-      desktopGap: 24,
-      mobileGap: 16,
-      desktopWheelSensitivity: 1.2,
-      spring: {
-        xStiffness: .090, xDamping: .735,
-        yStiffness: .088, yDamping: .728,
-        scaleStiffness: .076, scaleDamping: .770,
-      }
-    };
-
-    const stack = document.getElementById('stack');
-    const hitLayer = document.getElementById('hitLayer');
-    const stage = document.getElementById('stage');
+    const SETTINGS = { desktopWheelSensitivity: 1.2, spring: { xStiffness: .090, xDamping: .735, yStiffness: .088, yDamping: .728, scaleStiffness: .076, scaleDamping: .770 } };
+    const stack = document.getElementById('stack'); const hitLayer = document.getElementById('hitLayer'); const stage = document.getElementById('stage');
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let modal = { open: false, animating: false, index: -1, overlay: null, clone: null, closeBtn: null, hiddenCard: null };
-
-    // Преобразуем массив путей от Astro в нужный формат
     let ITEMS = projects.map(src => ({ src }));
-
-    if (!ITEMS.length) return;
-
-    function getSafeRatio(ratio) { return Math.max(0.4, Math.min(3.0, ratio || 1)); }
-
-    function loadItemRatios(items, callback) {
-      let left = items.length;
-      items.forEach(function (item) {
-        let img = new Image();
-        img.onload = function () {
-          item.ratio = getSafeRatio((img.naturalWidth || 1) / (img.naturalHeight || 1));
-          if (--left <= 0) callback(items);
-        };
-        img.onerror = function () {
-          item.ratio = 1;
-          if (--left <= 0) callback(items);
-        };
-        img.src = item.src;
-      });
-    }
-
-    loadItemRatios(ITEMS, function (readyItems) {
-      ITEMS = readyItems;
-      startGallery();
-    });
+    if (!ITEMS.length || !stack || !stage || !hitLayer) return;
+    startGallery();
 
     function startGallery() {
-      let active = -1;
-      let pointer = { x: 0, y: 0, inside: false };
-      let lastTime = performance.now();
-      let mobileOffset = 0;
-      let mobileTargetOffset = 0;
-      let mobileVelocity = 0;
-      let ignoreClickUntil = 0;
-      let drag = { active: false, pointerId: null, startX: 0, lastX: 0, lastT: 0, moved: false, baseOffset: 0 };
-
+      let active = -1; let pointer = { x: 0, y: 0, inside: false }; let lastTime = performance.now(); let mobileOffset = 0; let mobileTargetOffset = 0; let mobileVelocity = 0; let drag = { active: false, pointerId: null, startX: 0, lastX: 0, lastT: 0, moved: false, baseOffset: 0 };
       function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
-      function isMobile() { return window.innerWidth <= 760; }
-
       let cards = ITEMS.map(function (item, i) {
-        let el = document.createElement('article');
-        el.className = 'card';
-        el.style.zIndex = String(10 + i);
-        el.style.aspectRatio = String(item.ratio || 1) + ' / 1';
-
-        let inner = document.createElement('div');
-        inner.className = 'card-img';
-        inner.style.backgroundImage = 'url("' + item.src + '")';
-
-        let hoverSrc = item.src.replace(/\.jpg$/i, '.webp');
-        let hoverEl = document.createElement('img');
-        hoverEl.className = 'hover-anim';
-        hoverEl.src = hoverSrc;
-        hoverEl.loading = 'lazy';
-        hoverEl.alt = ''; // <-- Добавили пустой alt для скринридеров
-
-        inner.appendChild(hoverEl);
-        el.appendChild(inner);
-        stack.appendChild(el);
-
-        return {
-          el: el, src: item.src, webp: hoverSrc, ratio: item.ratio || 1,
-          x: 0, y: 0, s: 1, vx: 0, vy: 0, vs: 0,
-          tx: 0, ty: 0, ts: 1, isActive: false
-        };
+        let el = document.createElement('article'); el.className = 'card'; el.style.zIndex = String(10 + i);
+        let inner = document.createElement('div'); inner.className = 'card-img'; inner.style.backgroundImage = 'url("' + item.src + '")';
+        let hoverSrc = item.src.replace(/\.(jpg|jpeg|png)$/i, '.webp'); let hoverEl = document.createElement('img'); hoverEl.className = 'hover-anim'; hoverEl.src = hoverSrc; hoverEl.loading = 'lazy'; hoverEl.alt = ''; 
+        hoverEl.onerror = function() { this.style.display = 'none'; };
+        inner.appendChild(hoverEl); el.appendChild(inner); stack.appendChild(el);
+        return { el: el, src: item.src, webp: hoverSrc, x: 0, y: 0, s: 1, vx: 0, vy: 0, vs: 0, tx: 0, ty: 0, ts: 1, isActive: false };
       });
-
-      function cardSize() { return cards[0].el.offsetHeight || 250; }
-      function cardWidth(index) { return cardSize() * cards[index].ratio; }
-      
-      function getTotalWidth() {
-        let total = 0, gap = isMobile() ? SETTINGS.mobileGap : SETTINGS.desktopGap;
-        cards.forEach((c, i) => total += cardWidth(i) + gap);
-        return total - gap;
-      }
-
+      function getScaleFactor() { let currentHeight = stage.clientHeight || window.innerHeight * 0.6; return currentHeight / 665; }
+      function cardSize() { return stage.clientHeight || window.innerHeight * 0.6; }
+      function cardWidth() { return cardSize() * (968 / 665); }
+      function getGap() { return 10 * getScaleFactor(); }
+      function getTotalWidth() { let total = 0, gap = getGap(); cards.forEach(() => total += cardWidth() + gap); return total - gap; }
       function computeTargets() {
-        let size = cardSize();
-        let gap = isMobile() ? SETTINGS.mobileGap : SETTINGS.desktopGap;
-        let currentX = mobileOffset;
-
+        let size = cardSize(); let gap = getGap(); let currentX = mobileOffset; let centerY = 0; 
         cards.forEach(function (card, i) {
-          let width = cardWidth(i);
-          card.el.style.width = width.toFixed(1) + 'px';
-          card.el.style.height = size.toFixed(1) + 'px';
-          card.tx = currentX;
-          card.ty = 0;
-          card.ts = 1;
-
-          let isHovered = (active === i && pointer.inside);
-          if (isHovered) {
-            card.ty = -size * 0.03;
-            card.ts = 1.02;
-          }
-
-          if (isHovered !== card.isActive) {
-             card.isActive = isHovered;
-             if (isHovered) card.el.classList.add('is-active');
-             else card.el.classList.remove('is-active');
-          }
+          let width = cardWidth(); card.el.style.width = width + 'px'; card.el.style.height = size + 'px'; card.tx = currentX; card.ty = centerY; card.ts = 1;
+          let isHovered = (active === i && pointer.inside); if (isHovered) { card.ts = 1.01; }
+          if (isHovered !== card.isActive) { card.isActive = isHovered; if (isHovered) card.el.classList.add('is-active'); else card.el.classList.remove('is-active'); }
           currentX += width + gap;
         });
       }
-
       function activeFromPointer(clientX, clientY) {
-        let stageRect = stage.getBoundingClientRect();
-        let localX = clientX - stageRect.left;
-        let localY = clientY - stageRect.top;
-
-        for (let i = cards.length - 1; i >= 0; i--) {
-          let w = cardWidth(i), h = cardSize();
-          let left = cards[i].x, top = cards[i].y;
-          if (localX >= left && localX <= left + w && localY >= top && localY <= top + h) {
-            return i;
-          }
-        }
+        let stageRect = stage.getBoundingClientRect(); let localX = clientX - stageRect.left; let localY = clientY - stageRect.top;
+        for (let i = cards.length - 1; i >= 0; i--) { let w = cardWidth(), h = cardSize(); let left = cards[i].x, top = cards[i].y; if (localX >= left && localX <= left + w && localY >= top && localY <= top + h) { return i; } }
         return -1;
       }
-
-      function stepSpring(card, prop, target, velocity, dt, stiffness, damping) {
-        let displacement = card[target] - card[prop];
-        card[velocity] += displacement * stiffness * dt;
-        card[velocity] *= Math.pow(damping, dt);
-        card[prop] += card[velocity] * dt;
-      }
-
+      function stepSpring(card, prop, target, velocity, dt, stiffness, damping) { let displacement = card[target] - card[prop]; card[velocity] += displacement * stiffness * dt; card[velocity] *= Math.pow(damping, dt); card[prop] += card[velocity] * dt; }
       function render(now) {
-        let dt = clamp((now - lastTime) / 16.6667, .5, 2.15);
-        lastTime = now;
-
-        if (!drag.active) {
-          let vHolder = { v: mobileVelocity };
-          let displacement = mobileTargetOffset - mobileOffset;
-          vHolder.v += displacement * 0.082 * dt;
-          vHolder.v *= Math.pow(0.735, dt);
-          mobileOffset += vHolder.v * dt;
-          mobileVelocity = vHolder.v;
-        }
-
+        let dt = clamp((now - lastTime) / 16.6667, .5, 2.15); lastTime = now;
+        if (!drag.active) { let vHolder = { v: mobileVelocity }; let displacement = mobileTargetOffset - mobileOffset; vHolder.v += displacement * 0.082 * dt; vHolder.v *= Math.pow(0.735, dt); mobileOffset += vHolder.v * dt; mobileVelocity = vHolder.v; }
         computeTargets();
-
         cards.forEach(function (card, i) {
-          if (reduceMotion) {
-            card.x = card.tx; card.y = card.ty; card.s = card.ts;
-          } else {
-            let delayFeel = 1 - Math.min(i, 18) * .005;
-            stepSpring(card, 'x', 'tx', 'vx', dt, SETTINGS.spring.xStiffness * delayFeel, SETTINGS.spring.xDamping);
-            stepSpring(card, 'y', 'ty', 'vy', dt, SETTINGS.spring.yStiffness * delayFeel, SETTINGS.spring.yDamping);
-            stepSpring(card, 's', 'ts', 'vs', dt, SETTINGS.spring.scaleStiffness, SETTINGS.spring.scaleDamping);
-          }
-
-          let isActive = (pointer.inside && active === i) ? 1 : 0;
-          let shadowBlur = 32 + (isActive * 24);
-          let shadowY = 12 + (isActive * 8);
-
-          card.el.style.boxShadow = `0 ${shadowY}px ${shadowBlur}px rgba(0,0,0,.5), 0 4px 12px rgba(0,0,0,.2)`;
+          if (reduceMotion) { card.x = card.tx; card.y = card.ty; card.s = card.ts; } else { let delayFeel = 1 - Math.min(i, 18) * .005; stepSpring(card, 'x', 'tx', 'vx', dt, SETTINGS.spring.xStiffness * delayFeel, SETTINGS.spring.xDamping); stepSpring(card, 'y', 'ty', 'vy', dt, SETTINGS.spring.yStiffness * delayFeel, SETTINGS.spring.yDamping); stepSpring(card, 's', 'ts', 'vs', dt, SETTINGS.spring.scaleStiffness, SETTINGS.spring.scaleDamping); }
           card.el.style.transform = `translate(${card.x.toFixed(3)}px, ${card.y.toFixed(3)}px) scale(${card.s.toFixed(4)})`;
         });
-
         requestAnimationFrame(render);
       }
-
-      function getCardStartRect(card) {
-        let stageRect = stage.getBoundingClientRect();
-        let baseW = cardWidth(cards.indexOf(card)), baseH = cardSize();
-        let w = baseW * card.s, h = baseH * card.s;
-        let cx = stageRect.left + card.x + baseW / 2, cy = stageRect.top + card.y + baseH / 2;
-        return { left: cx - w / 2, top: cy - h / 2, width: w, height: h };
-      }
-
-      function getFullscreenRect(card) {
-        let vw = window.innerWidth, vh = window.innerHeight;
-        let maxW = vw * 0.88, maxH = vh * 0.88;
-        if (vw < 760) { maxW = vw * 0.94; maxH = vh * 0.80; }
-        
-        let width = maxW, height = width / card.ratio;
-        if (height > maxH) { height = maxH; width = height * card.ratio; }
-        return { left: (vw - width) / 2, top: (vh - height) / 2, width: width, height: height };
-      }
-
+      function getCardStartRect(card) { let stageRect = stage.getBoundingClientRect(); let baseW = cardWidth(), baseH = cardSize(); let w = baseW * card.s, h = baseH * card.s; let cx = stageRect.left + card.x + baseW / 2, cy = stageRect.top + card.y + baseH / 2; return { left: cx - w / 2, top: cy - h / 2, width: w, height: h }; }
+      function getFullscreenRect() { let vw = window.innerWidth, vh = window.innerHeight; let maxW = vw * 0.88, maxH = vh * 0.88; let width = maxW, height = width / (968 / 665); if (height > maxH) { height = maxH; width = height * (968 / 665); } return { left: (vw - width) / 2, top: (vh - height) / 2, width: width, height: height }; }
       function openCard(index) {
-        if (modal.open || modal.animating) return;
-        let card = cards[index];
-        let start = getCardStartRect(card);
-        let target = getFullscreenRect(card);
-
-        modal.open = true; modal.animating = true; modal.index = index;
-        pointer.inside = false; active = -1;
-
-        let overlay = document.createElement('div');
-        overlay.className = 'gallery-overlay';
-
-        let clone = document.createElement('div');
-        clone.className = 'gallery-clone';
-        
-        let cloneImg = document.createElement('div');
-        cloneImg.className = 'card-img';
-        
-        let modalWebp = document.createElement('img');
-        modalWebp.src = card.webp;
-        modalWebp.style.width = '100%';
-        modalWebp.style.height = '100%';
-        modalWebp.style.objectFit = 'cover';
-        modalWebp.style.borderRadius = 'inherit';
-
-        cloneImg.appendChild(modalWebp);
-        clone.appendChild(cloneImg);
-
-        let closeBtn = document.createElement('button');
-        closeBtn.className = 'gallery-close';
-        closeBtn.innerHTML = '&times;';
-
-        document.body.appendChild(overlay);
-        document.body.appendChild(clone);
-        document.body.appendChild(closeBtn);
-        document.body.classList.add('modal-open');
-
+        if (modal.open || modal.animating) return; let card = cards[index]; let start = getCardStartRect(card); let target = getFullscreenRect();
+        modal.open = true; modal.animating = true; modal.index = index; pointer.inside = false; active = -1;
+        let overlay = document.createElement('div'); overlay.className = 'gallery-overlay'; let clone = document.createElement('div'); clone.className = 'gallery-clone'; let cloneImg = document.createElement('div'); cloneImg.className = 'card-img'; let modalImg = document.createElement('img'); modalImg.src = card.webp; modalImg.style.width = '100%'; modalImg.style.height = '100%'; modalImg.style.objectFit = 'cover'; modalImg.style.borderRadius = 'inherit';
+        modalImg.onerror = function() { this.src = card.src; };
+        cloneImg.appendChild(modalImg); clone.appendChild(cloneImg); let closeBtn = document.createElement('button'); closeBtn.className = 'gallery-close'; closeBtn.innerHTML = '&times;';
+        document.body.appendChild(overlay); document.body.appendChild(clone); document.body.appendChild(closeBtn); document.body.classList.add('modal-open');
         modal.overlay = overlay; modal.clone = clone; modal.closeBtn = closeBtn; modal.hiddenCard = card.el;
-
-        clone.style.left = start.left + 'px'; clone.style.top = start.top + 'px';
-        clone.style.width = start.width + 'px'; clone.style.height = start.height + 'px';
-        card.el.style.opacity = '0'; 
-
-        overlay.addEventListener('click', closeCard);
-        clone.addEventListener('click', closeCard);
-        closeBtn.addEventListener('click', closeCard);
-
-        overlay.animate([{ opacity: '0' }, { opacity: '1' }], { duration: 300, fill: 'forwards' });
-        closeBtn.animate([{ opacity: '0', transform: 'scale(.8)' }, { opacity: '1', transform: 'scale(1)' }], { duration: 300, delay: 200, fill: 'forwards' });
-        
-        let anim = clone.animate([
-          { left: start.left + 'px', top: start.top + 'px', width: start.width + 'px', height: start.height + 'px' },
-          { left: target.left + 'px', top: target.top + 'px', width: target.width + 'px', height: target.height + 'px' }
-        ], { duration: 600, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' });
-        
+        clone.style.left = start.left + 'px'; clone.style.top = start.top + 'px'; clone.style.width = start.width + 'px'; clone.style.height = start.height + 'px'; card.el.style.opacity = '0'; 
+        overlay.addEventListener('click', closeCard); clone.addEventListener('click', closeCard); closeBtn.addEventListener('click', closeCard);
+        overlay.animate([{ opacity: '0' }, { opacity: '1' }], { duration: 300, fill: 'forwards' }); closeBtn.animate([{ opacity: '0', transform: 'scale(.8)' }, { opacity: '1', transform: 'scale(1)' }], { duration: 300, delay: 200, fill: 'forwards' });
+        let anim = clone.animate([ { left: start.left + 'px', top: start.top + 'px', width: start.width + 'px', height: start.height + 'px' }, { left: target.left + 'px', top: target.top + 'px', width: target.width + 'px', height: target.height + 'px' } ], { duration: 600, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' });
         anim.onfinish = function() { modal.animating = false; };
       }
-
       function closeCard() {
-        if (!modal.open || modal.animating) return;
-        modal.animating = true;
-        let card = cards[modal.index];
-        let end = getCardStartRect(card);
-        let current = modal.clone.getBoundingClientRect();
-
-        modal.overlay.animate([{ opacity: '1' }, { opacity: '0' }], { duration: 300, fill: 'forwards' });
-        modal.closeBtn.animate([{ opacity: '1', transform: 'scale(1)' }, { opacity: '0', transform: 'scale(.8)' }], { duration: 200, fill: 'forwards' });
-        
-        let anim = modal.clone.animate([
-          { left: current.left + 'px', top: current.top + 'px', width: current.width + 'px', height: current.height + 'px' },
-          { left: end.left + 'px', top: end.top + 'px', width: end.width + 'px', height: end.height + 'px' }
-        ], { duration: 500, easing: 'cubic-bezier(.3,0,.2,1)', fill: 'forwards' });
-
-        anim.onfinish = function() {
-          card.el.style.opacity = '1';
-          [modal.overlay, modal.clone, modal.closeBtn].forEach(n => n.parentNode.removeChild(n));
-          document.body.classList.remove('modal-open');
-          modal.open = false; modal.animating = false; modal.index = -1;
-        };
+        if (!modal.open || modal.animating) return; modal.animating = true; let card = cards[modal.index]; let end = getCardStartRect(card); let current = modal.clone.getBoundingClientRect();
+        modal.overlay.animate([{ opacity: '1' }, { opacity: '0' }], { duration: 300, fill: 'forwards' }); modal.closeBtn.animate([{ opacity: '1', transform: 'scale(1)' }, { opacity: '0', transform: 'scale(.8)' }], { duration: 200, fill: 'forwards' });
+        let anim = modal.clone.animate([ { left: current.left + 'px', top: current.top + 'px', width: current.width + 'px', height: current.height + 'px' }, { left: end.left + 'px', top: end.top + 'px', width: end.width + 'px', height: end.height + 'px' } ], { duration: 500, easing: 'cubic-bezier(.3,0,.2,1)', fill: 'forwards' });
+        anim.onfinish = function() { card.el.style.opacity = '1'; [modal.overlay, modal.clone, modal.closeBtn].forEach(n => n.parentNode.removeChild(n)); document.body.classList.remove('modal-open'); modal.open = false; modal.animating = false; modal.index = -1; };
       }
-
-      hitLayer.addEventListener('pointerenter', () => { if(!modal.open) pointer.inside = true; });
-      hitLayer.addEventListener('pointermove', e => {
-        if(modal.open || drag.active) return;
-        pointer.inside = true;
-        active = activeFromPointer(e.clientX, e.clientY);
-      });
-      hitLayer.addEventListener('pointerleave', () => { pointer.inside = false; active = -1; });
-
-      hitLayer.addEventListener('pointerdown', e => {
-        if (modal.open || (e.button != null && e.button !== 0)) return;
-        drag.active = true; drag.pointerId = e.pointerId;
-        drag.startX = drag.lastX = e.clientX;
-        drag.lastT = performance.now(); drag.moved = false;
-        drag.baseOffset = mobileOffset;
-        hitLayer.classList.add('is-dragging');
-        try { hitLayer.setPointerCapture(e.pointerId); } catch (e) {}
-      });
-
-      hitLayer.addEventListener('pointermove', e => {
-        if (!drag.active) return;
-        let dx = e.clientX - drag.startX;
-        let now = performance.now(), dt = Math.max(1, now - drag.lastT);
-        mobileVelocity = (e.clientX - drag.lastX) / dt * 16;
-        drag.lastX = e.clientX; drag.lastT = now;
-        if (Math.abs(dx) > 5) drag.moved = true;
-
-        let minOffset = Math.min(0, stage.clientWidth - getTotalWidth());
-        let nextOffset = drag.baseOffset + dx;
-        if (nextOffset > 0) nextOffset = nextOffset * 0.3;
-        if (nextOffset < minOffset) nextOffset = minOffset + (nextOffset - minOffset) * 0.3;
-        mobileOffset = mobileTargetOffset = nextOffset;
-      });
-
-      function finishDrag(e) {
-        if (!drag.active) return;
-        ignoreClickUntil = performance.now() + 100;
-        hitLayer.classList.remove('is-dragging');
-        try { hitLayer.releasePointerCapture(drag.pointerId); } catch (e) {}
-        drag.active = false;
-
-        let minOffset = Math.min(0, stage.clientWidth - getTotalWidth());
-        mobileTargetOffset = mobileOffset + mobileVelocity * 8; 
-        mobileTargetOffset = clamp(mobileTargetOffset, minOffset, 0);
-
-        if (!drag.moved) {
-          let tapIndex = activeFromPointer(e.clientX, e.clientY);
-          if (tapIndex >= 0) openCard(tapIndex);
-        }
-      }
-
-      hitLayer.addEventListener('pointerup', finishDrag);
-      hitLayer.addEventListener('pointercancel', finishDrag);
-
-      hitLayer.addEventListener('wheel', e => {
-        if (modal.open || drag.active) return;
-        let delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-        if (Math.abs(delta) < 1) return;
-        e.preventDefault();
-
-        let minOffset = Math.min(0, stage.clientWidth - getTotalWidth());
-        mobileTargetOffset -= delta * SETTINGS.desktopWheelSensitivity;
-        mobileTargetOffset = clamp(mobileTargetOffset, minOffset, 0);
-      }, { passive: false });
-
-      hitLayer.addEventListener('click', e => {
-        if (performance.now() < ignoreClickUntil || modal.open) return;
-        let index = activeFromPointer(e.clientX, e.clientY);
-        if (index !== -1) openCard(index);
-      });
-
-      window.addEventListener('resize', () => {
-        computeTargets();
-        let minOffset = Math.min(0, stage.clientWidth - getTotalWidth());
-        mobileTargetOffset = clamp(mobileTargetOffset, minOffset, 0);
-      });
-
-      document.documentElement.classList.add('ui-ready');
-      requestAnimationFrame(render);
+      hitLayer.addEventListener('pointerenter', () => { if(!modal.open) pointer.inside = true; }); hitLayer.addEventListener('pointermove', e => { if(modal.open || drag.active) return; pointer.inside = true; active = activeFromPointer(e.clientX, e.clientY); }); hitLayer.addEventListener('pointerleave', () => { pointer.inside = false; active = -1; });
+      hitLayer.addEventListener('pointerdown', e => { if (modal.open || (e.button != null && e.button !== 0)) return; drag.active = true; drag.pointerId = e.pointerId; drag.startX = drag.lastX = e.clientX; drag.lastT = performance.now(); drag.moved = false; drag.baseOffset = mobileOffset; hitLayer.classList.add('is-dragging'); try { hitLayer.setPointerCapture(e.pointerId); } catch (e) {} });
+      hitLayer.addEventListener('pointermove', e => { if (!drag.active) return; let dx = e.clientX - drag.startX; let now = performance.now(), dt = Math.max(1, now - drag.lastT); mobileVelocity = (e.clientX - drag.lastX) / dt * 16; drag.lastX = e.clientX; drag.lastT = now; if (Math.abs(dx) > 5) drag.moved = true; let minOffset = Math.min(0, stage.clientWidth - getTotalWidth()); let nextOffset = drag.baseOffset + dx; if (nextOffset > 0) nextOffset = nextOffset * 0.3; if (nextOffset < minOffset) nextOffset = minOffset + (nextOffset - minOffset) * 0.3; mobileOffset = mobileTargetOffset = nextOffset; });
+      function finishDrag(e) { if (!drag.active) return; hitLayer.classList.remove('is-dragging'); try { hitLayer.releasePointerCapture(drag.pointerId); } catch (e) {} drag.active = false; let minOffset = Math.min(0, stage.clientWidth - getTotalWidth()); mobileTargetOffset = mobileOffset + mobileVelocity * 8; mobileTargetOffset = clamp(mobileTargetOffset, minOffset, 0); if (!drag.moved) { let tapIndex = activeFromPointer(e.clientX, e.clientY); if (tapIndex >= 0) openCard(tapIndex); } }
+      hitLayer.addEventListener('pointerup', finishDrag); hitLayer.addEventListener('pointercancel', finishDrag);
+      window.addEventListener('wheel', e => { if (modal.open || drag.active) return; let delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; if (Math.abs(delta) < 1) return; e.preventDefault(); let minOffset = Math.min(0, stage.clientWidth - getTotalWidth()); mobileTargetOffset -= delta * SETTINGS.desktopWheelSensitivity; mobileTargetOffset = clamp(mobileTargetOffset, minOffset, 0); }, { passive: false });
+      window.addEventListener('resize', () => { computeTargets(); let minOffset = Math.min(0, stage.clientWidth - getTotalWidth()); mobileTargetOffset = clamp(mobileTargetOffset, minOffset, 0); });
+      document.documentElement.classList.add('ui-ready'); requestAnimationFrame(render);
     }
   })();
 </script>

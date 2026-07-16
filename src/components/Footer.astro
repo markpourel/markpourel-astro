@@ -1,35 +1,94 @@
 ---
-// src/components/Footer.astro
-const currentYear = new Date().getFullYear();
+import { Image } from 'astro:assets';
+import profileImg from '../assets/profile/profile.jpg';
 ---
 
-<footer id="contacts" class="mt-24 border-t border-neutral-200 bg-white">
-  <div class="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
-    <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
-      
-      <!-- Текстовый блок -->
-      <div class="text-center sm:text-left">
-        <h2 class="text-xl font-bold text-neutral-900">Mark Pourel</h2>
-        <p class="mt-2 text-sm text-neutral-600">Функциональный дизайн и проектирование.</p>
-      </div>
-      
-      <!-- Ссылки для связи -->
-      <div class="flex gap-6">
-        <a href="mailto:hello@markpourel.ru" class="text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900">
-          Email
-        </a>
-        <a href="https://t.me/your_telegram" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900">
-          Telegram
-        </a>
-      </div>
-      
+<footer class="flex flex-row justify-between items-center w-full h-[255px] shrink-0 gap-[10px] min-w-0">
+  
+  <!-- ПРОФИЛЬ -->
+  <div class="flex flex-row items-center gap-[32px] h-[255px] flex-1 max-w-[800px] min-w-0">
+    <div class="w-[192px] h-[255px] rounded-[12px] overflow-hidden shrink-0 bg-[#1A1A1A]">
+      <Image src={profileImg} alt="Марк Пурель" class="w-full h-full object-cover" />
     </div>
-    
-    <!-- Копирайт -->
-    <div class="mt-8 flex justify-center border-t border-neutral-100 pt-8">
-      <p class="text-xs text-neutral-500">
-        &copy; {currentYear} Mark Pourel. Все права защищены.
-      </p>
+    <div class="flex flex-col justify-center items-start gap-[16px] flex-1 min-w-0 h-[255px]">
+      <h2 class="font-['Fixel_Display'] font-medium text-[32px] leading-none tracking-[-0.04em] text-white truncate w-full">Диджитал-дизайнер</h2>
+      <p class="font-['Fixel_Display'] font-medium text-[18px] leading-[116%] tracking-[-0.05em] text-white opacity-80 line-clamp-3">Я - Марк. Закрываю полный цикл разработки: UX/UI, 3D, моушн и AI, создавая качественные цифровые решения на стыке технологий и визуального сторителлинга.</p>
+      
+      <div class="box-border flex flex-row items-center p-[4px] gap-[2px] bg-[#171717] rounded-[8px] shrink-0">
+        <a href="#" class="box-border flex flex-row items-center px-[6px] gap-[4px] h-[25px] bg-[#262626] border border-white/15 rounded-[5px] transition-colors hover:bg-neutral-700">
+          <div class="w-[14px] h-[11.6px] bg-[#E9E9E9] opacity-50"></div>
+          <span class="font-['Fixel_Display'] font-semibold text-[12px] leading-[130%] tracking-[-0.05em] text-white opacity-40">Telegram</span>
+        </a>
+        <a href="#" class="box-border flex flex-row items-center px-[6px] gap-[4px] h-[25px] bg-[#262626] border border-white/15 rounded-[5px] transition-colors hover:bg-neutral-700">
+          <div class="w-[16px] h-[10.11px] bg-[#E9E9E9] opacity-50"></div>
+          <span class="font-['Fixel_Display'] font-semibold text-[12px] leading-[130%] tracking-[-0.05em] text-white opacity-40">Behance</span>
+        </a>
+        <a href="#" class="box-border flex flex-row items-center px-[6px] gap-[4px] h-[25px] bg-[#262626] border border-white/15 rounded-[5px] transition-colors hover:bg-neutral-700">
+          <div class="w-[15px] h-[14.98px] bg-[#E9E9E9] opacity-50"></div>
+          <span class="font-['Fixel_Display'] font-semibold text-[12px] leading-[130%] tracking-[-0.05em] text-white opacity-40">Dribbble</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+<!-- Секция Skills: 3 колонки, чистые иконки, шрифт font-fixel -->
+<div class="flex flex-row items-center gap-[8px] w-[580px] h-[255px]">
+  
+  <!-- Column 1 (Figma, Illustrator, Redshift) -->
+  <div class="flex flex-col gap-[7px] w-[193.33px] h-full">
+    {[
+      { src: '/icons/figma.svg', label: 'Figma' },
+      { src: '/icons/illustrator.svg', label: 'Illustrator' },
+      { src: '/icons/redshift.svg', label: 'Redshift' }
+    ].map(item => (
+      <div class="flex items-center px-[6px] py-[6px] gap-[8px] h-[80.33px] w-full rounded-[8px]">
+        <img src={item.src} alt={item.label} class="w-[24px] h-[24px] object-contain shrink-0" />
+        <span class="font-fixel font-semibold text-[12px] text-white opacity-40 truncate">{item.label}</span>
+      </div>
+    ))}
+  </div>
+
+  <!-- Column 2 (Tilda, After Effects, ComfyUI) -->
+  <div class="flex flex-col gap-[7px] w-[193.33px] h-full">
+    {[
+      { src: '/icons/tilda.svg', label: 'Tilda' },
+      { src: '/icons/after.svg', label: 'After Effects' },
+      { src: '/icons/comfy.svg', label: 'ComfyUI' }
+    ].map(item => (
+      <div class="flex items-center px-[6px] py-[6px] gap-[8px] h-[80.33px] w-full rounded-[8px]">
+        <img src={item.src} alt={item.label} class="w-[24px] h-[24px] object-contain shrink-0" />
+        <span class="font-fixel font-semibold text-[12px] text-white opacity-40 truncate">{item.label}</span>
+      </div>
+    ))}
+  </div>
+
+  <!-- Column 3 (Photoshop, 3dsMax, Google Flow) -->
+  <div class="flex flex-col gap-[7px] w-[193.33px] h-full">
+    {[
+      { src: '/icons/photoshop.svg', label: 'Photoshop' },
+      { src: '/icons/3dsmax.svg', label: '3dsMax' },
+      { src: '/icons/flow.svg', label: 'Google Flow' }
+    ].map(item => (
+      <div class="flex items-center px-[6px] py-[6px] gap-[8px] h-[80.33px] w-full rounded-[8px]">
+        <img src={item.src} alt={item.label} class="w-[24px] h-[24px] object-contain shrink-0" />
+        <span class="font-fixel font-semibold text-[12px] text-white opacity-40 truncate">{item.label}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+  <!-- BENTO GRID -->
+  <div class="flex flex-row gap-[6px] w-[372px] h-[255px] shrink-0">
+    <div class="flex flex-col gap-[6px] w-[215px] h-[255px]">
+      <div class="flex gap-[6px] w-[215px] h-[64px]">
+        <div class="box-border flex flex-col p-[4px] w-[104.5px] h-[64px] bg-white/15 border border-white/15 rounded-[12px]"><div class="w-full h-full rounded-[8px] bg-[#1A1A1A]"></div></div>
+        <div class="box-border flex flex-col p-[4px] w-[104.5px] h-[64px] bg-white/15 border border-white/15 rounded-[12px]"><div class="w-full h-full rounded-[8px] bg-[#1A1A1A]"></div></div>
+      </div>
+      <div class="box-border flex flex-col p-[4px] w-[215px] h-[185px] bg-white/15 border border-white/15 rounded-[12px]"><div class="w-full h-full rounded-[8px] bg-[#1A1A1A]"></div></div>
+    </div>
+    <div class="flex flex-col gap-[6px] w-[151px] h-[255px]">
+      <div class="box-border flex flex-col p-[4px] w-[151px] h-[185px] bg-white/15 border border-white/15 rounded-[12px]"><div class="w-full h-full rounded-[8px] bg-[#1A1A1A]"></div></div>
+      <div class="box-border flex flex-col p-[4px] w-[151px] h-[64px] bg-white/15 border border-white/15 rounded-[12px]"><div class="w-full h-full rounded-[8px] bg-[#1A1A1A]"></div></div>
     </div>
   </div>
 </footer>
