@@ -64,4 +64,20 @@
   .skill-icon-box {
     @apply flex items-center justify-center w-[24px] h-[24px] shrink-0;
   }
+
+  @layer utilities {
+  /* Контейнер маски */
+  .reveal-line {
+    display: inline-flex; /* Держим элементы в строке, если нужно */
+    overflow: hidden;
+    vertical-align: top; /* Избегаем смещения базовой линии */
+  }
+  
+  /* Сам текст, который будет выезжать */
+  .reveal-text {
+    display: inline-block;
+    transform: translateY(100%);
+    will-change: transform;
+  }
+}
 }

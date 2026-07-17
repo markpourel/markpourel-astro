@@ -57,6 +57,76 @@ const projectFiles = Object.entries(imageFiles).map(([path, file]) => {
 </style>
 
 <script>
+  import gsap from 'gsap';
+  import Lenis from '@studio-freight/lenis';
+
+  // --- 1. Lenis Smooth Scroll ---
+  const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+  });
+
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+
+  // --- 2. GSAP Entrance Animations ---
+  window.addEventListener('DOMContentLoaded', () => {
+    const tl = gsap.timeline();
+
+    // 1. Появление контейнеров Хедера и Футера (просто делаем их видимыми)
+    tl.fromTo(['header', 'footer'], 
+      { opacity: 0 }, 
+      { opacity: 1, duration: 3, ease: 'back.out(1.4)' },
+      0
+    );
+
+    // 2. Выезд текста в Хедере и Футере по строкам (Line Reveal)
+    tl.fromTo('.reveal-text', 
+      { y: '100%' }, // Старт: спрятано внизу
+      { y: '0%', duration: 2, stagger: 0.1, ease: 'back.out(1.4)' },
+      0.2 // Начинаем почти сразу
+    );
+
+    // 3. Появление карточек галереи
+    tl.fromTo('.card', 
+      { y: 80, opacity: 0, rotateX: 10 }, 
+      { y: 0, opacity: 1, rotateX: 0, duration: 2, stagger: 0.15, ease: 'back.out(1.4)' },
+      0.4 // Выезжают параллельно с текстом
+    );
+  });
+
+  // --- 3. Магнитные кнопки (Magnetic Effect) ---
+  const magneticItems = document.querySelectorAll('header a, header button, footer a');
+
+  magneticItems.forEach((item) => {
+    item.addEventListener('mousemove', (e) => {
+      const position = item.getBoundingClientRect();
+      const x = e.clientX - position.left - position.width / 2;
+      const y = e.clientY - position.top - position.height / 2;
+
+      gsap.to(item, {
+        x: x * 0.3,
+        y: y * 0.3,
+        duration: 0.5,
+        ease: 'power3.out',
+      });
+    });
+
+    item.addEventListener('mouseleave', () => {
+      gsap.to(item, {
+        x: 0,
+        y: 0,
+        duration: 0.5,
+        ease: 'elastic.out(1, 0.3)',
+      });
+    });
+  });
+
+  // --- 4. Логика галереи ---
   (function () {
     'use strict';
     const SETTINGS = { desktopWheelSensitivity: 1.2, spring: { xStiffness: .090, xDamping: .735, yStiffness: .088, yDamping: .728, scaleStiffness: .076, scaleDamping: .770 } };
@@ -184,7 +254,18 @@ const projectFiles = Object.entries(imageFiles).map(([path, file]) => {
       
       function finishDrag(e) { if (!drag.active) return; hitLayer.classList.remove('is-dragging'); try { hitLayer.releasePointerCapture(drag.pointerId); } catch (e) {} drag.active = false; let minOffset = Math.min(0, stage.clientWidth - getTotalWidth()); mobileTargetOffset = mobileOffset + mobileVelocity * 8; mobileTargetOffset = clamp(mobileTargetOffset, minOffset, 0); if (!drag.moved) { let tapIndex = activeFromPointer(e.clientX, e.clientY); if (tapIndex >= 0) openCard(tapIndex); } }
       hitLayer.addEventListener('pointerup', finishDrag); hitLayer.addEventListener('pointercancel', finishDrag);
-      window.addEventListener('wheel', e => { if (modal.open || drag.active) return; let delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; if (Math.abs(delta) < 1) return; e.preventDefault(); let minOffset = Math.min(0, stage.clientWidth - getTotalWidth()); mobileTargetOffset -= delta * SETTINGS.desktopWheelSensitivity; mobileTargetOffset = clamp(mobileTargetOffset, minOffset, 0); }, { passive: false });
+      
+      // ИСПРАВЛЕНИЕ: wheel привязан строго к hitLayer
+      hitLayer.addEventListener('wheel', e => { 
+        if (modal.open || drag.active) return; 
+        let delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; 
+        if (Math.abs(delta) < 1) return; 
+        e.preventDefault(); 
+        let minOffset = Math.min(0, stage.clientWidth - getTotalWidth()); 
+        mobileTargetOffset -= delta * SETTINGS.desktopWheelSensitivity; 
+        mobileTargetOffset = clamp(mobileTargetOffset, minOffset, 0); 
+      }, { passive: false });
+
       window.addEventListener('resize', () => { computeTargets(); let minOffset = Math.min(0, stage.clientWidth - getTotalWidth()); mobileTargetOffset = clamp(mobileTargetOffset, minOffset, 0); });
       
       document.documentElement.classList.add('ui-ready'); requestAnimationFrame(render);
