@@ -46,6 +46,10 @@ export default class ChatGPTTyper {
             });
             node.parentNode.replaceChild(frag, node);
         });
+
+        // Делаем родительский контейнер видимым только ПОСЛЕ того, 
+        // как разбили текст на прозрачные спаны. Это убирает мигание.
+        this.el.style.opacity = "1";
     }
 
     observe() {

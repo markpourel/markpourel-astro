@@ -12,13 +12,13 @@
   /* Базовый шрифт и переменные типографики */
   --font-onest: "Onest", sans-serif;
 
-  --text-hero-name: clamp(3rem, 2.14rem + 5.1vw, 8rem);
+  --text-hero-name: clamp(3rem, 2.14rem + 5.1vw, 15rem);
   --text-hero-name-leading: 1;
   --text-h1: clamp(4rem, 1.6rem + 1.8vw, 6rem);
   --text-h1-leading: 1;
   --text-label-sm: clamp(0.56rem, 0.54rem + 0.1vw, 0.625rem);
   --text-label-sm-leading: 1;
-  --text-body-md: clamp(0.875rem, 0.83rem + 0.2vw, 1rem);
+  --text-body-md: clamp(0.575rem, 0.83rem + 0.2vw, 1rem);
   --text-body-md-leading: 1.16;
   --text-ui-btn: clamp(0.687rem, 0.65rem + 0.15vw, 0.75rem);
   --text-ui-btn-leading: 1.3;
@@ -30,11 +30,26 @@
   body {
     font-family: var(--font-onest);
   }
+
+  /* Скрываем скроллбар для Firefox и Edge на обоих корневых тегах */
+  html, body {
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+  }
+
+  /* Скрываем скроллбар для Chrome, Safari и Opera */
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @layer components {
   /* --- ТИПОГРАФИКА --- */
-  .text-h1 { @apply font-bold text-[--text-h1] leading-[--text-h1-leading] tracking-tight; }
+  .text-hero-name { 
+    @apply font-normal text-[--text-hero-name] leading-[--text-hero-name-leading] tracking-[-0.02em]; 
+  }
+  .text-h1 { @apply font-bold text-[--text-h1] leading-[--text-h1-leading] tracking-[-0.03em]; }
   .text-label-sm { @apply font-semibold text-[--text-label-sm] leading-[--text-label-sm-leading] tracking-[-0.03em]; }
   .text-body-md { @apply font-normal text-[--text-body-md] leading-[--text-body-md-leading] tracking-[-0.01em]; }
   .text-ui-btn { @apply font-semibold text-[--text-ui-btn] leading-[--text-ui-btn-leading] tracking-[-0.04em]; }
@@ -79,10 +94,8 @@
     will-change: opacity, color;
   }
 
-  .text-hero-name { 
-    font-weight: 400; /* Regular */
-    font-size: var(--text-hero-name); 
-    line-height: var(--text-hero-name-leading); 
-    letter-spacing: -0.02em; 
+  /* Скрываем заголовки и текст до инициализации скрипта, чтобы они не мигали */
+  .typing-title, .typing-text {
+    opacity: 0;
   }
 }

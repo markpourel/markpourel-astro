@@ -12,31 +12,85 @@ import Hero from '../components/Hero.astro';
 <script>
   import ChatGPTTyper from '../scripts/ChatGPTTyper';
   import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
 
   window.addEventListener('DOMContentLoaded', () => {
     
-    // 1. Инициализируем тайперы ДО анимации с флагом startOnView: false.
-    // Они сразу заменят текст на прозрачные спаны, предотвращая мигание.
+    // --- 1. Тайперы и появление элементов ---
     const titleTypers = Array.from(document.querySelectorAll('.typing-title')).map(
       el => new ChatGPTTyper(el, { speed: 40, tail: 2, finalColor: "#ffffff", tailColor: "#ff7b00", startOnView: false })
     );
-    
     const descTypers = Array.from(document.querySelectorAll('.typing-text')).map(
       el => new ChatGPTTyper(el, { speed: 25, tail: 4, finalColor: "#ffffff", tailColor: "#ff7b00", startOnView: false })
     );
 
-    // 2. Запускаем GSAP анимацию
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-    tl.from('.ui-header', { opacity: 0, y: -20, duration: 1 }, 0)
-      .from('.anim-render', { opacity: 0, scale: 0.95, duration: 1.5 }, 0.2)
-      .from('.anim-title', { opacity: 0, y: 30, duration: 1.2 }, 0.4)
-      .from('.anim-avatar', { opacity: 0, y: 20, duration: 1 }, 0.8)
-      // 3. Вызываем ручной старт печати после появления блоков
-      .call(() => {
-        titleTypers.forEach(typer => typer.start());
-        descTypers.forEach(typer => typer.start());
-      });
+    tl.from('.anim-render', { opacity: 0, scale: 0.95, duration: 1.5 }, 0)
+      .from('.anim-avatar', { opacity: 0, y: 20, duration: 1 }, 0.4)
+      .from('.ui-header', { opacity: 0, y: -20, duration: 1 }, 1.2)
+      .call(() => { titleTypers.forEach(typer => typer.start()); }, null, 0.2)
+      .call(() => { descTypers.forEach(typer => typer.start()); }, null, 0.4);
+
+    // --- 2. Умная логика видео при скролле ---
+    const video = document.querySelector('.anim-render') as HTMLVideoElement;
+    const heroSection = document.querySelector('.hero-section');
+    
+    if (!video || !heroSection) return;
+
+    let isScrolled = false;
+
+    video.muted = true;
+    video.loop = true; 
+    video.setAttribute('playsinline', '');
+    
+    video.play().catch(e => console.log('Автоплей заблокирован:', e));
+
+    // Обрезаем цикл ровно на 4 секундах
+    video.addEventListener('timeupdate', () => {
+      if (!isScrolled && video.currentTime >= 4) {
+        video.currentTime = 0;
+      }
+    });
+
+    const initScrollVideo = () => {
+      const videoDuration = (isFinite(video.duration) && video.duration > 0) ? video.duration : 10; 
       
+      // Скролл теперь подхватывает видео начиная с 4-й секунды
+      const startLoopTime = Math.min(4, videoDuration - 0.1); 
+
+      ScrollTrigger.create({
+        trigger: heroSection,
+        start: "top top",
+        end: "+=250%", 
+        pin: true,
+        onUpdate: (self) => {
+          if (self.progress > 0.001) {
+            isScrolled = true;
+            video.pause(); 
+            
+            // Плавная привязка кадров видео к прогрессу скролла
+            gsap.to(video, {
+              currentTime: startLoopTime + (self.progress * (videoDuration - startLoopTime)),
+              duration: 0.1, // Мягкая доводка кадра
+              ease: "none",
+              overwrite: "auto" // Предотвращает конфликты при быстром скролле
+            });
+          } else {
+            // Пользователь докрутил в самый верх — возвращаем обычное воспроизведение
+            isScrolled = false;
+            video.play();
+          }
+        }
+      });
+    };
+
+    if (video.readyState >= 2) {
+      initScrollVideo();
+    } else {
+      video.addEventListener('loadeddata', initScrollVideo);
+    }
   });
 </script>

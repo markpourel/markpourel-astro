@@ -8,13 +8,13 @@ const videoFiles = import.meta.glob<{ default: string }>('/src/assets/video/*.{m
 const videoEntry = Object.values(videoFiles)[0];
 const videoUrl = videoEntry ? videoEntry.default : '/video/bg.webm';
 ---
-<section class="relative flex w-full h-dvh flex-col justify-between items-center overflow-hidden box-border">
+<!-- Добавлен класс hero-section для привязки GSAP ScrollTrigger -->
+<section class="hero-section relative flex w-full h-dvh flex-col justify-between items-center overflow-hidden box-border">
   
-  <!-- Зацикленное видео на весь экран с адаптивным покрытием -->
+  <!-- Зацикленное видео: убран атрибут loop, так как теперь мы управляем им через JS -->
   <video 
     src={videoUrl} 
     autoplay 
-    loop 
     muted 
     playsinline 
     class="anim-render absolute inset-0 w-full h-full object-cover z-0 will-change-transform"
@@ -25,7 +25,6 @@ const videoUrl = videoEntry ? videoEntry.default : '/video/bg.webm';
 
   <!-- Центральная часть: Заголовок поверх видео -->
   <div class="relative w-full flex-1 flex justify-center items-center pointer-events-none z-10">
-    <!-- Используем созданный адаптивный класс -->
     <h1 class="anim-title typing-title text-center text-white text-hero-name">
       Марк Пурель
     </h1>
