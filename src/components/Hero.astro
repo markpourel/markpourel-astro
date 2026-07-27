@@ -2,35 +2,33 @@
 // src/components/Hero.astro
 import HeroHeader from './HeroHeader.astro';
 import HeroDescription from './HeroDescription.astro';
-
-// Автоматический импорт видео из папки src/assets/video/
-const videoFiles = import.meta.glob<{ default: string }>('/src/assets/video/*.{mp4,webm}', { eager: true });
-const videoEntry = Object.values(videoFiles)[0];
-const videoUrl = videoEntry ? videoEntry.default : '/video/bg.webm';
+import HeroTimeline from './HeroTimeline.astro'; 
 ---
-<!-- Добавлен класс hero-section для привязки GSAP ScrollTrigger -->
 <section class="hero-section relative flex w-full h-dvh flex-col justify-between items-center overflow-hidden box-border">
   
-  <!-- Зацикленное видео: убран атрибут loop, так как теперь мы управляем им через JS -->
+  <!-- Добавили poster и preload="auto" -->
   <video 
-    src={videoUrl} 
+    preload="auto"
+    poster="/video/poster.jpg"
     autoplay 
     muted 
     playsinline 
     class="anim-render absolute inset-0 w-full h-full object-cover z-0 will-change-transform"
-  ></video>
+  >
+    <source src="/video/mobile_bg.webm" type="video/webm" media="(max-width: 768px)" />
+    <source src="/video/desktop_bg.webm" type="video/webm" />
+  </video>
 
-  <!-- Верхняя шапка -->
   <HeroHeader />
 
-  <!-- Центральная часть: Заголовок поверх видео -->
   <div class="relative w-full flex-1 flex justify-center items-center pointer-events-none z-10">
     <h1 class="anim-title typing-title text-center text-white text-hero-name">
       Марк Пурель
     </h1>
   </div>
 
-  <!-- Нижний блок с аватаром -->
+  <HeroTimeline />
+
   <HeroDescription />
 
 </section>

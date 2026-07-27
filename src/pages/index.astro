@@ -30,6 +30,7 @@ import Hero from '../components/Hero.astro';
 
     tl.from('.anim-render', { opacity: 0, scale: 0.95, duration: 1.5 }, 0)
       .from('.anim-avatar', { opacity: 0, y: 20, duration: 1 }, 0.4)
+      .from('.anim-timeline', { opacity: 0, y: 20, duration: 1 }, 1.2)
       .from('.ui-header', { opacity: 0, y: -20, duration: 1 }, 1.2)
       .call(() => { titleTypers.forEach(typer => typer.start()); }, null, 0.2)
       .call(() => { descTypers.forEach(typer => typer.start()); }, null, 0.4);
@@ -37,6 +38,8 @@ import Hero from '../components/Hero.astro';
     // --- 2. Умная логика видео при скролле ---
     const video = document.querySelector('.anim-render') as HTMLVideoElement;
     const heroSection = document.querySelector('.hero-section');
+    const timelineFill = document.querySelector('.timeline-fill');
+    const timelineThumb = document.querySelector('.timeline-thumb');
     
     if (!video || !heroSection) return;
 
@@ -46,9 +49,22 @@ import Hero from '../components/Hero.astro';
     video.loop = true; 
     video.setAttribute('playsinline', '');
     
-    video.play().catch(e => console.log('Автоплей заблокирован:', e));
+    // Функция безопасного старта видео
+    const startVideoPlay = async () => {
+      try {
+        await video.play();
+      } catch (e) {
+        console.log('Автоплей заблокирован браузером:', e);
+      }
+    };
 
-    // Обрезаем цикл ровно на 4 секундах
+    // Ждем, пока браузер скачает достаточно данных для игры без тормозов
+    if (video.readyState >= 4) { // 4 = HAVE_ENOUGH_DATA
+      startVideoPlay();
+    } else {
+      video.addEventListener('canplaythrough', startVideoPlay, { once: true });
+    }
+
     video.addEventListener('timeupdate', () => {
       if (!isScrolled && video.currentTime >= 4) {
         video.currentTime = 0;
@@ -57,8 +73,6 @@ import Hero from '../components/Hero.astro';
 
     const initScrollVideo = () => {
       const videoDuration = (isFinite(video.duration) && video.duration > 0) ? video.duration : 10; 
-      
-      // Скролл теперь подхватывает видео начиная с 4-й секунды
       const startLoopTime = Math.min(4, videoDuration - 0.1); 
 
       ScrollTrigger.create({
@@ -71,26 +85,40 @@ import Hero from '../components/Hero.astro';
             isScrolled = true;
             video.pause(); 
             
-            // Плавная привязка кадров видео к прогрессу скролла
+            // 1. Анимируем видео
             gsap.to(video, {
               currentTime: startLoopTime + (self.progress * (videoDuration - startLoopTime)),
-              duration: 0.1, // Мягкая доводка кадра
+              duration: 0.1, 
               ease: "none",
-              overwrite: "auto" // Предотвращает конфликты при быстром скролле
+              overwrite: "auto" 
             });
+
+            // 2. Анимируем интерфейс таймлайна
+            const progressPercent = self.progress * 100;
+            if (timelineFill && timelineThumb) {
+              gsap.to(timelineFill, { width: `${progressPercent}%`, duration: 0.1, ease: "none", overwrite: "auto" });
+              gsap.to(timelineThumb, { left: `${progressPercent}%`, duration: 0.1, ease: "none", overwrite: "auto" });
+            }
+
           } else {
-            // Пользователь докрутил в самый верх — возвращаем обычное воспроизведение
             isScrolled = false;
-            video.play();
+            startVideoPlay(); // Безопасный старт при возврате в начало
+            
+            // Сбрасываем таймлайн в 0
+            if (timelineFill && timelineThumb) {
+              gsap.to(timelineFill, { width: `0%`, duration: 0.3, ease: "power2.out", overwrite: "auto" });
+              gsap.to(timelineThumb, { left: `0%`, duration: 0.3, ease: "power2.out", overwrite: "auto" });
+            }
           }
         }
       });
     };
 
-    if (video.readyState >= 2) {
+    // Инициализируем скролл только когда известна длительность видео
+    if (video.readyState >= 1) { // 1 = HAVE_METADATA 
       initScrollVideo();
     } else {
-      video.addEventListener('loadeddata', initScrollVideo);
+      video.addEventListener('loadedmetadata', initScrollVideo);
     }
   });
 </script>
