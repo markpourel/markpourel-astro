@@ -1,0 +1,20 @@
+---
+// src/components/HeroDescription.astro
+import { Image } from 'astro:assets';
+import profileImg from '../assets/profile/profile.jpg';
+---
+<div class="flex justify-center items-center gap-3 z-10 w-full px-4 mb-16 md:mb-32">
+  
+  <!-- Аватарка: скрыта на мобильных (hidden), появляется на планшетах (md:block) -->
+  <div class="anim-avatar hidden md:block w-[44px] shrink-0 p-1 bg-white/15 rounded-xl ring-1 ring-inset ring-white/15 flex-col">
+    <Image src={profileImg} alt="Марк Пурель" class="w-full h-[52px] object-cover rounded-lg" />
+  </div>
+  
+  <!-- Текст: на мобильных по центру, на десктопе по левому краю -->
+  <div class="flex justify-center items-center w-full max-w-[398px]">
+    <p class="typing-text text-body-md text-white/70 text-center md:text-left">
+      Полный цикл разработки: UX/UI, 3D, Motion. Качественные цифровые решения на стыке технологий и визуального сторителлинга.
+    </p>
+  </div>
+  
+</div>

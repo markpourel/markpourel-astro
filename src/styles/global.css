@@ -1,83 +1,88 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: 'Fixel Display';
-  src: url('/fonts/Fixel-Variable.woff2') format('woff2-variations');
-  font-weight: 500 600 700;
+  font-family: 'Onest';
+  src: url('/fonts/Onest-Variable.woff2') format('woff2');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 @theme {
-  /* Шрифты */
-  --font-fixel: "Fixel Display", sans-serif;
+  /* Базовый шрифт и переменные типографики */
+  --font-onest: "Onest", sans-serif;
 
-  /* Базовая сетка типографики */
-  --text-h1: 32px;
+  --text-hero-name: clamp(3rem, 2.14rem + 5.1vw, 8rem);
+  --text-hero-name-leading: 1;
+  --text-h1: clamp(4rem, 1.6rem + 1.8vw, 6rem);
   --text-h1-leading: 1;
-
-  --text-label-sm: 10px;
+  --text-label-sm: clamp(0.56rem, 0.54rem + 0.1vw, 0.625rem);
   --text-label-sm-leading: 1;
-
-  --text-body-md: 12px;
+  --text-body-md: clamp(0.875rem, 0.83rem + 0.2vw, 1rem);
   --text-body-md-leading: 1.16;
-
-  --text-ui-btn: 12px;
+  --text-ui-btn: clamp(0.687rem, 0.65rem + 0.15vw, 0.75rem);
   --text-ui-btn-leading: 1.3;
-
-  --text-caption: 12px;
+  --text-caption: clamp(0.687rem, 0.65rem + 0.15vw, 0.75rem);
   --text-caption-leading: 1.3;
 }
 
-@layer components {
-  /* Заголовок "Диджитал-дизайнер" в профиле */
-  .text-h1 {
-    @apply font-fixel font-medium text-[--text-h1] leading-[--text-h1-leading] tracking-[-0.04em];
-  }
-  
-  /* Подзаголовок в хедере "Диджитал-дизайнер" */
-  .text-label-sm {
-    @apply font-fixel font-semibold text-[--text-label-sm] leading-[--text-label-sm-leading] tracking-[-0.03em];
-  }
-  
-  /* Основной текст профиля */
-  .text-body-md {
-    @apply font-fixel font-[350] text-[--text-body-md] leading-[--text-body-md-leading] tracking-[-0.01em];
-  }
-  
-  /* Кнопки меню */
-  .text-ui-btn {
-    @apply font-fixel font-semibold text-[--text-ui-btn] leading-[--text-ui-btn-leading] tracking-[-0.04em];
-  }
-  
-  /* Подписи к навыкам и иконкам */
-  .text-caption {
-    @apply font-fixel font-semibold text-[--text-caption] leading-[--text-caption-leading] tracking-[-0.05em];
-  }
-  
- /* Карточка навыка (обертка) - без фона и обводки */
-  .skill-card {
-    @apply flex flex-row items-center px-[6px] py-[6px] gap-[8px] w-[117px] h-[36px] rounded-[8px] box-border shrink-0;
-  }
-  
-  /* Контейнер для иконки - теперь строго 24x24 без стилизации */
-  .skill-icon-box {
-    @apply flex items-center justify-center w-[24px] h-[24px] shrink-0;
-  }
-
-  @layer utilities {
-  /* Контейнер маски */
-  .reveal-line {
-    display: inline-flex; /* Держим элементы в строке, если нужно */
-    overflow: hidden;
-    vertical-align: top; /* Избегаем смещения базовой линии */
-  }
-  
-  /* Сам текст, который будет выезжать */
-  .reveal-text {
-    display: inline-block;
-    transform: translateY(100%);
-    will-change: transform;
+@layer base {
+  body {
+    font-family: var(--font-onest);
   }
 }
+
+@layer components {
+  /* --- ТИПОГРАФИКА --- */
+  .text-h1 { @apply font-bold text-[--text-h1] leading-[--text-h1-leading] tracking-tight; }
+  .text-label-sm { @apply font-semibold text-[--text-label-sm] leading-[--text-label-sm-leading] tracking-[-0.03em]; }
+  .text-body-md { @apply font-normal text-[--text-body-md] leading-[--text-body-md-leading] tracking-[-0.01em]; }
+  .text-ui-btn { @apply font-semibold text-[--text-ui-btn] leading-[--text-ui-btn-leading] tracking-[-0.04em]; }
+  .text-caption { @apply font-semibold text-[--text-caption] leading-[--text-caption-leading] tracking-[-0.05em]; }
+
+  /* --- UI КОМПОНЕНТЫ --- */
+  
+  /* Контейнер шапки */
+  .ui-header {
+    @apply w-full flex justify-between items-center h-8 z-10 px-8 pt-8;
+  }
+
+  /* Кнопки соцсетей (квадратные и прямоугольные) */
+  .social-btn {
+    @apply bg-[#262626] rounded-[5px] ring-1 ring-inset ring-white/15 flex justify-center items-center hover:bg-neutral-700 transition-colors;
+  }
+  .social-btn-icon {
+    @apply w-7 h-7;
+  }
+  .social-btn-text {
+    @apply h-7 px-1.5;
+  }
+
+  /* Бейдж со сложным градиентом */
+  .badge-icon-outer {
+    @apply w-8 h-8 rounded-lg ring-1 ring-inset ring-white/25 flex justify-center items-center bg-[linear-gradient(212deg,rgba(62.8,62.8,62.8,0.75)_0%,rgba(14.7,14.7,14.7,0.75)_100%)] drop-shadow-[0_4px_4px_rgba(0,0,0,0.15)];
+  }
+  .badge-icon-inner {
+    @apply w-[18px] h-6 ring-1 ring-inset ring-white/25 bg-[linear-gradient(45deg,rgba(255,255,255,0.15)_0%,transparent_100%)];
+  }
+
+  /* Основная кнопка (Связаться) */
+  .btn-primary {
+    @apply h-8 px-3 py-1.5 bg-white rounded-lg flex justify-center items-center hover:bg-gray-200 transition-colors;
+  }
+}
+
+@layer utilities {
+  .gpt-char {
+    display: inline;
+    transition: color 1.15s ease-out;
+    will-change: opacity, color;
+  }
+
+  .text-hero-name { 
+    font-weight: 400; /* Regular */
+    font-size: var(--text-hero-name); 
+    line-height: var(--text-hero-name-leading); 
+    letter-spacing: -0.02em; 
+  }
 }

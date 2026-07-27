@@ -1,9 +1,8 @@
 ---
-// Подключаем наш файл со стилями Tailwind
+// Подключаем наш файл со стилями
 import '../styles/global.css';
 
-// Позволяем передавать title для каждой страницы индивидуально
-const { title = 'Портфолио | Mark Pourel', description = 'Сайт-портфолио' } = Astro.props;
+const { title = 'Дизайнер Марк Пурель', description = 'Полный цикл разработки: UX/UI, 3D, Motion' } = Astro.props;
 ---
 
 <!doctype html>
@@ -18,8 +17,8 @@ const { title = 'Портфолио | Mark Pourel', description = 'Сайт-по
 		<meta name="description" content={description} />
 	</head>
 	
-	<!-- Базовые классы Tailwind: задаем цвет фона, цвет текста и сглаживание шрифтов -->
-	<body class="bg-[#050505] text-neutral-300 antialiased font-['Fixel_Display'] selection:bg-neutral-800 selection:text-white">
+	<!-- font-onest теперь берется из настроек @theme в global.css -->
+	<body class="bg-[#050505] text-neutral-300 antialiased font-onest selection:bg-neutral-800 selection:text-white">
 		<slot />
 	</body>
 </html>

@@ -1,0 +1,48 @@
+---
+// src/components/HeroHeader.astro
+import telegram from './icons/telegram.svg';
+import behance from './icons/behance.svg';
+import linkedin from './icons/linkedin.svg';
+import logo from './icons/logo.svg'; // Твой логотип из папки icons
+---
+<header class="ui-header">
+  
+  <!-- Левый блок (Социальные сети) — скрыт на мобильных, появляется на планшетах и выше -->
+  <div class="hidden md:flex items-center gap-1">
+    
+    <a href="#" target="_blank" class="block hover:opacity-80 transition-opacity" aria-label="Telegram">
+      <img src={telegram.src} alt="Telegram" class="w-[28px] h-[28px] object-contain" />
+    </a>
+    
+    <a href="#" target="_blank" class="block hover:opacity-80 transition-opacity" aria-label="Behance">
+      <img src={behance.src} alt="Behance" class="w-[28px] h-[28px] object-contain" />
+    </a>
+    
+    <a href="#" target="_blank" class="block hover:opacity-80 transition-opacity" aria-label="LinkedIn">
+      <img src={linkedin.src} alt="LinkedIn" class="w-[28px] h-[28px] object-contain" />
+    </a>
+    
+  </div>
+
+  <!-- Центральный блок (Логотип и подпись) -->
+  <!-- На мобильных mr-auto сдвигает его влево, на md:mr-0 возвращает центрирование/стандартное поведение -->
+  <div class="flex items-center gap-2 mr-auto md:mr-0">
+    
+    <!-- Твой логотип -->
+    <div class="w-8 h-8 flex justify-center items-center">
+      <img src={logo.src} alt="Logo" class="w-full h-full object-contain" />
+    </div>
+    
+    <div class="flex flex-col justify-center items-start gap-0.5">
+      <span class="text-[10px] font-semibold text-white/50 leading-none">Диджитал-дизайнер</span>
+      <span class="text-base font-semibold text-white/75 leading-none tracking-tight">Марк Пурель</span>
+    </div>
+    
+  </div>
+
+  <!-- Правый блок (Кнопка) — зафиксирована справа благодаря flex justify-between в классе .ui-header -->
+  <a href="#contacts" class="btn-primary">
+    <span class="text-ui-btn text-[#2D2D2D] opacity-70">Связаться</span>
+  </a>
+  
+</header>
