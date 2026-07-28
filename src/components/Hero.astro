@@ -7,17 +7,19 @@ import HeroTimeline from './HeroTimeline.astro';
 <section class="hero-section relative flex w-full h-dvh flex-col justify-between items-center overflow-hidden box-border">
   
   <!-- Добавили poster и preload="auto" -->
-  <video 
-    preload="auto"
-    poster="/video/poster.jpg"
-    autoplay 
-    muted 
-    playsinline 
-    class="anim-render absolute inset-0 w-full h-full object-cover z-0 will-change-transform"
-  >
-    <source src="/video/mobile_bg.webm" type="video/webm" media="(max-width: 768px)" />
-    <source src="/video/desktop_bg.webm" type="video/webm" />
-  </video>
+<video 
+  preload="auto"
+  poster="/video/poster.jpg"
+  autoplay 
+  muted 
+  playsinline 
+  class="anim-render absolute inset-0 w-full h-full object-cover z-0 will-change-transform"
+>
+  <!-- Мобилки получают MP4 (H.264) — он аппаратно декодируется на 100% устройств -->
+  <source src="/video/mobile_bg.mp4" type="video/mp4" media="(max-width: 768px)" />
+  <!-- Десктопы получают WebM (VP9) -->
+  <source src="/video/desktop_bg.webm" type="video/webm" />
+</video>
 
   <HeroHeader />
 
