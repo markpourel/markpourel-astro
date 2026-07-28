@@ -35,90 +35,96 @@ import Hero from '../components/Hero.astro';
       .call(() => { titleTypers.forEach(typer => typer.start()); }, null, 0.2)
       .call(() => { descTypers.forEach(typer => typer.start()); }, null, 0.4);
 
-    // --- 2. Умная логика видео при скролле ---
-    const video = document.querySelector('.anim-render') as HTMLVideoElement;
+    // --- 2. Логика Canvas Image Sequence ---
+    const canvas = document.querySelector('.anim-render') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
     const heroSection = document.querySelector('.hero-section');
     const timelineFill = document.querySelector('.timeline-fill');
     const timelineThumb = document.querySelector('.timeline-thumb');
     
-    if (!video || !heroSection) return;
+    if (!canvas || !ctx || !heroSection) return;
 
-    let isScrolled = false;
+    // Указываем разрешение исходных кадров
+    canvas.width = 1920; 
+    canvas.height = 1080;
 
-    video.muted = true;
-    video.loop = true; 
-    video.setAttribute('playsinline', '');
-    
-    // Функция безопасного старта видео
-    const startVideoPlay = async () => {
-      try {
-        await video.play();
-      } catch (e) {
-        console.log('Автоплей заблокирован браузером:', e);
+    // ВАЖНО: Укажи здесь точное количество кадров, которое выдал FFmpeg!
+    const frameCount = 421; 
+    // 4 секунды * 30 fps = 120 кадр (точка зацикливания и начала скролла)
+    const loopEndFrame = 120; 
+
+    const images: HTMLImageElement[] = [];
+    const frames = { currentIndex: 0 };
+
+    // Генератор путей к кадрам (frame_0001.jpg, frame_0002.jpg...)
+    const currentFrame = (index: number) => `/frames/frame_${(index + 1).toString().padStart(4, '0')}.jpg`;
+
+    // Функция отрисовки кадра
+    const render = () => {
+      const img = images[Math.round(frames.currentIndex)];
+      if (img && img.complete) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       }
     };
 
-    // Ждем, пока браузер скачает достаточно данных для игры без тормозов
-    if (video.readyState >= 4) { // 4 = HAVE_ENOUGH_DATA
-      startVideoPlay();
-    } else {
-      video.addEventListener('canplaythrough', startVideoPlay, { once: true });
+    // Предзагрузка всех кадров
+    for (let i = 0; i < frameCount; i++) {
+      const img = new Image();
+      img.src = currentFrame(i);
+      images.push(img);
     }
 
-    video.addEventListener('timeupdate', () => {
-      if (!isScrolled && video.currentTime >= 4) {
-        video.currentTime = 0;
+    // Рисуем самый первый кадр сразу, как только он загрузится
+    images[0].onload = render;
+
+    // Создаем анимацию холостого хода (0 - 4 сек), которая крутится бесконечно
+    let idleAnimation = gsap.to(frames, {
+      currentIndex: loopEndFrame,
+      duration: 4, // 4 секунды реального времени
+      ease: "none",
+      repeat: -1, // Бесконечный повтор
+      onUpdate: render
+    });
+
+    // Привязываем остальные кадры к скроллу
+    ScrollTrigger.create({
+      trigger: heroSection,
+      start: "top top",
+      end: "+=250%", 
+      pin: true,
+      onUpdate: (self) => {
+        if (self.progress > 0.001) {
+          // Пользователь начал скроллить — ставим холостой ход на паузу
+          idleAnimation.pause();
+          
+          // Анимируем кадры от loopEndFrame до самого конца
+          gsap.to(frames, {
+            currentIndex: loopEndFrame + (self.progress * (frameCount - 1 - loopEndFrame)),
+            duration: 0.1, 
+            ease: "none",
+            overwrite: "auto",
+            onUpdate: render
+          });
+
+          // Анимируем интерфейс таймлайна
+          const progressPercent = self.progress * 100;
+          if (timelineFill && timelineThumb) {
+            gsap.to(timelineFill, { width: `${progressPercent}%`, duration: 0.1, ease: "none", overwrite: "auto" });
+            gsap.to(timelineThumb, { left: `${progressPercent}%`, duration: 0.1, ease: "none", overwrite: "auto" });
+          }
+
+        } else {
+          // Пользователь вернулся в самый верх — запускаем холостой ход заново с 0 кадра
+          idleAnimation.play(0); 
+          
+          if (timelineFill && timelineThumb) {
+            gsap.to(timelineFill, { width: `0%`, duration: 0.3, ease: "power2.out", overwrite: "auto" });
+            gsap.to(timelineThumb, { left: `0%`, duration: 0.3, ease: "power2.out", overwrite: "auto" });
+          }
+        }
       }
     });
 
-    const initScrollVideo = () => {
-      const videoDuration = (isFinite(video.duration) && video.duration > 0) ? video.duration : 10; 
-      const startLoopTime = Math.min(4, videoDuration - 0.1); 
-
-      ScrollTrigger.create({
-        trigger: heroSection,
-        start: "top top",
-        end: "+=250%", 
-        pin: true,
-        onUpdate: (self) => {
-          if (self.progress > 0.001) {
-            isScrolled = true;
-            video.pause(); 
-            
-            // 1. Анимируем видео
-            gsap.to(video, {
-              currentTime: startLoopTime + (self.progress * (videoDuration - startLoopTime)),
-              duration: 0.1, 
-              ease: "none",
-              overwrite: "auto" 
-            });
-
-            // 2. Анимируем интерфейс таймлайна
-            const progressPercent = self.progress * 100;
-            if (timelineFill && timelineThumb) {
-              gsap.to(timelineFill, { width: `${progressPercent}%`, duration: 0.1, ease: "none", overwrite: "auto" });
-              gsap.to(timelineThumb, { left: `${progressPercent}%`, duration: 0.1, ease: "none", overwrite: "auto" });
-            }
-
-          } else {
-            isScrolled = false;
-            startVideoPlay(); // Безопасный старт при возврате в начало
-            
-            // Сбрасываем таймлайн в 0
-            if (timelineFill && timelineThumb) {
-              gsap.to(timelineFill, { width: `0%`, duration: 0.3, ease: "power2.out", overwrite: "auto" });
-              gsap.to(timelineThumb, { left: `0%`, duration: 0.3, ease: "power2.out", overwrite: "auto" });
-            }
-          }
-        }
-      });
-    };
-
-    // Инициализируем скролл только когда известна длительность видео
-    if (video.readyState >= 1) { // 1 = HAVE_METADATA 
-      initScrollVideo();
-    } else {
-      video.addEventListener('loadedmetadata', initScrollVideo);
-    }
   });
 </script>
